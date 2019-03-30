@@ -1,0 +1,4 @@
+type SomeType {
+  id: ID!
+  string: String!
+}

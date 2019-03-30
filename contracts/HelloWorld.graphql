@@ -1,0 +1,8 @@
+type Request {
+  id: ID!
+}
+
+type Response {
+  something: String!
+  somethingElse: SomeType
+}

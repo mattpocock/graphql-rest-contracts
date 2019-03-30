@@ -1,0 +1,26 @@
+{
+  "name": "contracts-graphql-poc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon -e js,graphql server",
+    "test": "node server/catchGQLErrors/run"
+  },
+  "devDependencies": {
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "nodemon": "^1.18.10"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "faker": "^4.1.0",
+    "file": "^0.2.2",
+    "graphql": "^0.10.1",
+    "moment": "^2.24.0",
+    "uuid": "^3.3.2"
+  }
+}
