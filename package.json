@@ -1,20 +1,22 @@
 {
-  "name": "contracts-graphql-poc",
+  "name": "contracts-graphql",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start": "nodemon -e js,graphql server",
-    "test": "node server/catchGQLErrors/run"
+    "test": "jest tests --watch"
   },
   "devDependencies": {
     "eslint": "^5.13.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-import": "^2.16.0",
-    "nodemon": "^1.18.10"
+    "eslint-plugin-jest": "^22.4.1",
+    "jest": "^24.5.0"
   },
   "dependencies": {
+    "nodemon": "^1.18.10",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "faker": "^4.1.0",

@@ -58,27 +58,33 @@ const mockIndividualKey = (type, title = '', arrayIndex) => {
     return randomValueFromArray([true, false]);
   }
 
+  if (type === 'GRAPHQL_SCALAR') {
+    return `scalar: ${adjustedTitle}`;
+  }
+
   throw new Error(`Unknown key type found: ${type}`);
 };
 
-const mockObject = ({
+const mockAnyType = ({
   object,
   definitions,
   isDefinition = false,
-  mockSchema = {},
   arrayIndex,
+  globalMockObject,
+  lastMockMatch,
 }) => {
   if (object.type === 'object' && object.properties) {
     const content = {
       ...Object.keys(object.properties)
-        .map((key) =>
-          mockObject({
+        .map((key) => {
+          return mockAnyType({
             object: object.properties[key],
             definitions,
-            mockSchema: mockSchema[key],
             arrayIndex,
-          }),
-        )
+            globalMockObject,
+            lastMockMatch: globalMockObject[object.title],
+          });
+        })
         .reduce(reduceToObject, {}),
     };
     return isDefinition ? content : { [object.title]: content };
@@ -89,13 +95,15 @@ const mockObject = ({
     object.type === 'number' ||
     object.type === 'integer' ||
     object.type === 'id' ||
-    object.type === 'boolean'
+    object.type === 'boolean' ||
+    object.type === 'GRAPHQL_SCALAR'
   ) {
-    /** If we have arrived at an individual key in the mocks, too */
-    if (typeof mockSchema !== 'object') {
-      return typeof mockSchema === 'function'
-        ? { [object.title]: mockSchema() }
-        : { [object.title]: mockSchema };
+    if (
+      lastMockMatch &&
+      lastMockMatch[object.title] &&
+      typeof lastMockMatch[object.title] === 'function'
+    ) {
+      return { [object.title]: lastMockMatch[object.title](arrayIndex || 0) };
     }
     return {
       [object.title]: mockIndividualKey(object.type, object.title, arrayIndex),
@@ -109,8 +117,20 @@ const mockObject = ({
   if (object.type === 'array' && object.items) {
     return {
       [object.title]: [
-        mockObject({ object: object.items, definitions, arrayIndex: 1 }),
-        mockObject({ object: object.items, definitions, arrayIndex: 2 }),
+        mockAnyType({
+          object: object.items,
+          definitions,
+          arrayIndex: 0,
+          globalMockObject,
+          lastMockMatch,
+        }),
+        mockAnyType({
+          object: object.items,
+          definitions,
+          arrayIndex: 1,
+          globalMockObject,
+          lastMockMatch,
+        }),
       ],
     };
   }
@@ -123,12 +143,13 @@ const mockObject = ({
   if (object.type && object.type.$ref) {
     const definition = object.type.$ref.replace(/#\/definitions\//, '');
     if (definitions[definition]) {
-      return mockObject({
+      return mockAnyType({
         object: definitions[definition],
         definitions,
         isDefinition: true,
-        mockSchema,
         arrayIndex,
+        globalMockObject,
+        lastMockMatch,
       });
     }
   }
@@ -136,12 +157,13 @@ const mockObject = ({
   if (object.$ref) {
     const definition = object.$ref.replace(/#\/definitions\//, '');
     if (definitions[definition]) {
-      return mockObject({
+      return mockAnyType({
         object: definitions[definition],
         definitions,
         isDefinition: true,
-        mockSchema,
         arrayIndex,
+        globalMockObject,
+        lastMockMatch,
       });
     }
   }
@@ -150,11 +172,12 @@ const mockObject = ({
     const adjustedObject = object.allOf.reduce((a, b) => ({ ...a, ...b }), {});
 
     return {
-      [adjustedObject.title]: mockObject({
+      [adjustedObject.title]: mockAnyType({
         object: adjustedObject,
         definitions,
-        mockSchema,
         arrayIndex,
+        globalMockObject,
+        lastMockMatch,
       }),
     };
   }
@@ -164,14 +187,14 @@ const mockObject = ({
   );
 };
 
-module.exports = (definitions = {}, mockSchema = {}) => {
+module.exports = (definitions = {}, globalMockObject = {}) => {
   return Object.keys(definitions)
     .map((key) => ({
-      [key]: mockObject({
+      [key]: mockAnyType({
         object: definitions[key],
         definitions,
         isDefinition: true,
-        mockSchema: mockSchema[key],
+        globalMockObject,
       }),
     }))
     .reduce(reduceToObject, {});

@@ -1,0 +1,7 @@
+type Request {
+  something: ID!
+}
+
+type Response {
+  Data: Boolean
+}

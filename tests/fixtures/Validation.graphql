@@ -1,0 +1,11 @@
+type Request {
+  string: String
+  id: ID
+  boolean: Boolean
+  float: Float
+  int: Int
+}
+
+type Response {
+  Data: Boolean
+}

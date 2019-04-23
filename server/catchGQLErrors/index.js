@@ -12,6 +12,7 @@ module.exports = () => {
   const errors = [];
   file.walkSync(contractsPath, (dir, dirs, files) => {
     files.forEach((fileName) => {
+      if (!fileName.includes('.graphql')) return;
       const fullContractPath = path.resolve(dir, fileName);
       try {
         const schema = getSchema(fullContractPath);

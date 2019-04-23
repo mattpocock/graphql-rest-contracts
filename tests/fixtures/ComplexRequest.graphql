@@ -1,0 +1,11 @@
+type Request {
+  requiredInput: Input!
+}
+
+type Response {
+  Data: Boolean
+}
+
+type Input {
+  someId: ID!
+}

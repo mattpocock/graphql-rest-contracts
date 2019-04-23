@@ -1,0 +1,17 @@
+type Response {
+  Data: ComplexResponse
+}
+
+type ComplexResponse {
+  object: SomeObject
+}
+
+type SomeObject {
+  id: ID!
+  string: String
+  array: [SomeOtherObject]
+}
+
+type SomeOtherObject {
+  name: String
+}

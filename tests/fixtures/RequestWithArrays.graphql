@@ -1,0 +1,12 @@
+type Request {
+  requiredArray: [Input!]!
+  requiredArrayOfStrings: [String]!
+}
+
+type Response {
+  Data: Boolean
+}
+
+type Input {
+  someId: ID!
+}
