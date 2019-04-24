@@ -6,7 +6,7 @@ const validateRequest = require('./validateRequest');
 const getSchema = require('./getSchema');
 const generateMocks = require('./generateMocks');
 
-const startServer = (contractsDir, mocksDir, typesDir) => {
+const startServer = ({ contractsDir, mocksDir, typesDir, port = 4000 }) => {
   const app = express();
   app.use(bodyParser.json({ limit: '999mb', type: `application/json` }));
 
@@ -93,9 +93,9 @@ const startServer = (contractsDir, mocksDir, typesDir) => {
     res.send('');
   });
 
-  // eslint-disable-next-line no-console
-  const server = app.listen(4000, () =>
-    console.log('Started server on port 4000...'),
+  const server = app.listen(port, () =>
+    // eslint-disable-next-line no-console
+    console.log(`Started server on port ${port}...`),
   );
   return server;
 };

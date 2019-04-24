@@ -12,9 +12,11 @@ program
   .command('start <contracts>')
   .option('-t, --types <folder>')
   .option('-m, --mocks <folder>')
+  .option('-p, --port <port>')
   .action((contractsDir, cmd) => {
     const mocksDir = cmd.mocks;
     const typesDir = cmd.types;
+    const port = cmd.port || 4000;
     gaze(
       [
         `${path.resolve(contractsDir)}/**/*.graphql`,
@@ -24,12 +26,12 @@ program
       (err, watcher) => {
         if (err) throw new Error(err);
 
-        let server = startServer(contractsDir, mocksDir, typesDir);
+        let server = startServer({ port, contractsDir, mocksDir, typesDir });
 
         watcher.on('all', () => {
           console.log('Change detected...'); // eslint-disable-line
           server.close();
-          server = startServer(contractsDir, mocksDir, typesDir);
+          server = startServer({ port, contractsDir, mocksDir, typesDir });
         });
       },
     );
