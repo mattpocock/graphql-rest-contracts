@@ -6,16 +6,14 @@ const path = require('path');
 const getSchema = require('../getSchema');
 const generateMocks = require('../generateMocks');
 
-const contractsPath = path.resolve(__dirname, '../../contracts');
-
-module.exports = () => {
+module.exports = (contractsPath, typesDir) => {
   const errors = [];
   file.walkSync(contractsPath, (dir, dirs, files) => {
     files.forEach((fileName) => {
       if (!fileName.includes('.graphql')) return;
       const fullContractPath = path.resolve(dir, fileName);
       try {
-        const schema = getSchema(fullContractPath);
+        const schema = getSchema(fullContractPath, typesDir);
         generateMocks(schema.definitions);
       } catch (e) {
         const error = `ERROR: ` + `${fullContractPath}` + `\n\n${e.toString()}`;
