@@ -1,6 +1,7 @@
 {
   "name": "graphql-rest-mocks",
-  "version": "0.0.1",
+  "description": "Mock a REST API using GraphQL",
+  "version": "0.0.2",
   "main": "./bin/index.js",
   "license": "MIT",
   "scripts": {

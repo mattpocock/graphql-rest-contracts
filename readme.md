@@ -1,18 +1,73 @@
-## Add A Contract
+# Getting Started
 
-Add contracts with endings ending in .graphql into the /contracts folder
+Run `npm i graphql-rest-mocks`
 
-## Add A Global Type
+Create a folder called `./contracts` in your repository
 
-Any types in .graphql files in the `/types` folder will be available in other contracts. To add a global type, like `ValueLabel`, add or edit one of the `/types` files.
+Add a file called `HelloWorld.graphql`, with these contents:
 
-## Start The Mock Server
+```graphql
+type Request {
+  id: ID!
+}
 
-Run `yarn start` to launch the server.
+type Response {
+  string: String!
+}
+```
 
-## Create Better Mocked Data
+Add this script to your package.json:
 
-Go into `/mocks` and add a Javascript object using the same folder structure and name as the call.
+```json
+{
+  "scripts": {
+    "start": "graphql-rest-mocks start ./contracts"
+  }
+}
+```
+
+Run `npm run start`
+
+Visit `localhost:4000/HelloWorld?id=200`
+
+You'll see a mock server producing data.
+
+## Add global types
+
+Create a folder called `./types`
+
+Add a file called `GlobalType.graphql`, with these contents:
+
+```graphql
+type GlobalType {
+  someGlobalId: ID!
+}
+```
+
+Change `HelloWorld.graphql` to use that global type, as below:
+
+```graphql
+type Request {
+  id: ID!
+}
+
+type Response {
+  string: String!
+  globalType: GlobalType!
+}
+```
+
+No need to import it, or do anything fancy. Any type, scalar or enum declared in the global types folder is available to all contracts.
+
+Change the script to use the types folder:
+
+```json
+{
+  "scripts": {
+    "start": "graphql-rest-mocks start ./contracts --types ./types"
+  }
+}
+```
 
 ## Possible Types
 

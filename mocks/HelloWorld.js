@@ -1,5 +1,5 @@
 module.exports = {
   Response: {
-    something: 'woweeeee',
+    something: () => 'woweeeee',
   },
 };
